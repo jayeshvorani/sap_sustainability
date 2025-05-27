@@ -55,43 +55,6 @@
         .flowchart-arrow {
             color: #0083C5; /* SAP Blue */
         }
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1000; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: auto;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            width: 90%;
-            position: relative;
-        }
-        .close-button {
-            color: #aaa;
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close-button:hover,
-        .close-button:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -115,13 +78,10 @@
         3. Enabling Our Customers: Sustainable Business Solutions
            - Introduction to SAP's role as an enabler.
            - Key Solution Capabilities: List of solutions (SAP Sustainability Control Tower, Footprint Management, etc.) with brief descriptions and icons, presented in cards.
-        4. Interactive Insights (NEW SECTION with LLM features)
-           - Sustainability Insight Generator (LLM-powered)
-           - ESG Reporting Explainer (LLM-powered)
-        5. Governance & Transparency:
+        4. Governance & Transparency:
            - Key aspects: Strategic Anchor, Reporting Standards (ESRS), External Validation (SBTi) (Text/Cards).
-        6. SAP's Vision for 2025 and Beyond: Concluding statement.
-        7. Footer: Confirmation of no SVG/Mermaid.
+        5. SAP's Vision for 2025 and Beyond: Concluding statement.
+        6. Footer: Confirmation of no SVG/Mermaid.
 
         Visualization Choices Summary (Confirming NO SVG / NO MERMAID JS):
         - Net-Zero Target (2030): Inform -> Single Big Number (HTML Text)
@@ -246,40 +206,6 @@
                  <div class="card-bg rounded-lg shadow-xl p-6 md:col-span-2 lg:col-span-3">
                     <h4 class="text-lg font-semibold mb-2 info-accent-text">⚙️ SAP Signavio Process Transformation Suite</h4>
                     <p class="text-sm dark-text">Embeds sustainability impact metrics to optimize business processes for environmental and social benefits. (Autumn 2025)</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="interactive-insights" class="mb-12">
-            <h2 class="text-3xl font-bold mb-8 text-center section-title">Interactive Insights ✨</h2>
-            <p class="text-center text-lg mb-8 max-w-2xl mx-auto dark-text">
-                Leverage the power of AI to gain deeper insights into sustainability topics and understand key ESG terms.
-            </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="card-bg rounded-lg shadow-xl p-6">
-                    <h3 class="text-xl font-semibold mb-3 primary-accent-text">Generate Sustainability Insight ✨</h3>
-                    <p class="text-sm dark-text mb-4">Click the button below to get a unique, actionable insight on a sustainability topic.</p>
-                    <button id="generateInsightBtn" class="bg-[#0083C5] hover:bg-[#00B0DA] text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 w-full">
-                        Generate Insight
-                    </button>
-                    <div id="insightLoading" class="hidden text-center mt-4 text-[#0083C5]">Loading insight...</div>
-                    <div id="sustainabilityInsight" class="mt-4 p-3 bg-gray-100 rounded-md text-sm dark-text min-h-[80px] flex items-center justify-center text-center">
-                        Your sustainability insight will appear here.
-                    </div>
-                </div>
-
-                <div class="card-bg rounded-lg shadow-xl p-6">
-                    <h3 class="text-xl font-semibold mb-3 positive-accent-text">Explain ESG Term ✨</h3>
-                    <p class="text-sm dark-text mb-4">Enter an ESG-related term (e.g., "CSRD", "SBTi", "Circular Economy") and get a concise explanation.</p>
-                    <input type="text" id="esgTermInput" placeholder="Enter ESG term" class="w-full p-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-[#0083C5]">
-                    <button id="explainEsgTermBtn" class="bg-[#64A314] hover:bg-[#00B0DA] text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 w-full">
-                        Explain Term
-                    </button>
-                    <div id="esgLoading" class="hidden text-center mt-4 text-[#64A314]">Explaining...</div>
-                    <div id="esgExplanation" class="mt-4 p-3 bg-gray-100 rounded-md text-sm dark-text min-h-[80px] flex items-center justify-center text-center">
-                        Explanation will appear here.
-                    </div>
                 </div>
             </div>
         </section>
@@ -484,95 +410,6 @@
                         bodyColor: '#F5F5F5', /* Light Gray */
                     }
                 }
-            }
-        });
-
-        // Gemini API Integration
-        document.getElementById('generateInsightBtn').addEventListener('click', async () => {
-            const insightDiv = document.getElementById('sustainabilityInsight');
-            const loadingDiv = document.getElementById('insightLoading');
-            insightDiv.textContent = ''; // Clear previous insight
-            loadingDiv.classList.remove('hidden');
-
-            const prompts = [
-                "Provide a concise, actionable insight on how businesses can reduce their carbon footprint in logistics.",
-                "Offer a practical tip for implementing circular economy principles in product design.",
-                "Give a short, impactful statement on the importance of social responsibility in modern supply chains.",
-                "Suggest a key step for companies looking to improve their ESG reporting accuracy."
-            ];
-            const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
-
-            let chatHistory = [];
-            chatHistory.push({ role: "user", parts: [{ text: randomPrompt }] });
-            const payload = { contents: chatHistory };
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    insightDiv.textContent = text;
-                } else {
-                    insightDiv.textContent = 'Failed to generate insight. Please try again.';
-                }
-            } catch (error) {
-                console.error('Error generating insight:', error);
-                insightDiv.textContent = 'Error: Could not connect to the API. Please try again later.';
-            } finally {
-                loadingDiv.classList.add('hidden');
-            }
-        });
-
-        document.getElementById('explainEsgTermBtn').addEventListener('click', async () => {
-            const termInput = document.getElementById('esgTermInput');
-            const explanationDiv = document.getElementById('esgExplanation');
-            const loadingDiv = document.getElementById('esgLoading');
-            const term = termInput.value.trim();
-
-            if (!term) {
-                explanationDiv.textContent = 'Please enter a term to explain.';
-                return;
-            }
-
-            explanationDiv.textContent = ''; // Clear previous explanation
-            loadingDiv.classList.remove('hidden');
-
-            const prompt = `Provide a concise, easy-to-understand explanation for the ESG term: "${term}". Keep it to 2-3 sentences.`;
-
-            let chatHistory = [];
-            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-            const payload = { contents: chatHistory };
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    explanationDiv.textContent = text;
-                } else {
-                    explanationDiv.textContent = `Could not explain "${term}". Please try a different term.`;
-                }
-            } catch (error) {
-                console.error('Error explaining term:', error);
-                explanationDiv.textContent = 'Error: Could not connect to the API. Please try again later.';
-            } finally {
-                loadingDiv.classList.add('hidden');
             }
         });
     </script>
