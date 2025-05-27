@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP Sustainability Credentials 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F5; /* Light Gray - SAP Background */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Default max-width */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px; /* Max height */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .kpi-value {
+            font-size: 2.5rem; /* Tailwind text-4xl */
+            font-weight: 700; /* Tailwind font-bold */
+            line-height: 1.1;
+        }
+        .kpi-label {
+            font-size: 0.875rem; /* Tailwind text-sm */
+            line-height: 1.25rem;
+        }
+        .section-title {
+            color: #0A1C2B; /* Darker Blue - SAP Text/Titles */
+        }
+        .card-bg {
+            background-color: #FFFFFF;
+        }
+        .primary-accent-text { color: #0083C5; } /* SAP Blue */
+        .secondary-accent-text { color: #00B0DA; } /* Brighter Blue/Teal */
+        .positive-accent-text { color: #64A314; } /* SAP Green */
+        .info-accent-text { color: #0083C5; } /* SAP Blue for info */
+        .dark-text { color: #0A1C2B; } /* Darker Blue - SAP Text */
+
+        .flowchart-step {
+            border: 2px solid #0083C5; /* SAP Blue */
+            background-color: #FFFFFF;
+            color: #0A1C2B; /* Darker Blue */
+        }
+        .flowchart-arrow {
+            color: #0083C5; /* SAP Blue */
+        }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- 
+        Chosen Color Palette (SAP Brand Inspired):
+        #0083C5 (Primary SAP Blue)
+        #00B0DA (Brighter Blue/Teal - Secondary Accent)
+        #64A314 (SAP Green - Positive/Success)
+        #0A1C2B (Darker Blue/Navy - Dark Text/Background Element)
+        #F5F5F5 (Light Gray - Light Background)
+        #FFFFFF (White - Card Backgrounds)
+        #CCCCCC (Neutral Gray - Borders/Grids)
+
+        Narrative & Structure Plan:
+        1. Hero Section: Title, SAP's commitment.
+        2. Our Own Operations: Leading by Example
+           - Climate Action: Net-Zero Target, Carbon Neutrality, Renewable Energy, Emissions Reduction (KPIs/Text).
+           - Circular Economy: Zero Waste, E-waste Diversion (Donut Chart), Plastic Reduction (KPIs/Text/Icon).
+           - Social Responsibility: Human Rights, Workplace Well-being, Community Impact (Text/Icons), Tree Planting (Bar Chart).
+        3. Enabling Our Customers: Sustainable Business Solutions
+           - Introduction to SAP's role as an enabler.
+           - Key Solution Capabilities: List of solutions (SAP Sustainability Control Tower, Footprint Management, etc.) with brief descriptions and icons, presented in cards.
+        4. Interactive Insights (NEW SECTION with LLM features)
+           - Sustainability Insight Generator (LLM-powered)
+           - ESG Reporting Explainer (LLM-powered)
+        5. Governance & Transparency:
+           - Key aspects: Strategic Anchor, Reporting Standards (ESRS), External Validation (SBTi) (Text/Cards).
+        6. SAP's Vision for 2025 and Beyond: Concluding statement.
+        7. Footer: Confirmation of no SVG/Mermaid.
+
+        Visualization Choices Summary (Confirming NO SVG / NO MERMAID JS):
+        - Net-Zero Target (2030): Inform -> Single Big Number (HTML Text)
+        - Carbon Neutrality (2023): Inform -> Single Big Number (HTML Text)
+        - Renewable Energy (100% since 2014): Inform -> Single Big Number (HTML Text)
+        - GHG Emissions Reduction (90% by 2030): Inform -> Single Big Number (HTML Text)
+        - Zero Waste Goal (2023): Inform -> Single Big Number (HTML Text)
+        - E-waste Diversion (>90%): Compare (proportion) -> Donut Chart (Chart.js Canvas)
+        - Plastic Reduction (Striving for free): Inform -> Text + Unicode Icon (HTML)
+        - Human Rights, Well-being, Community: Inform -> Text + Unicode Icons (HTML)
+        - Tree Planting (21M by 2025, 25M by 2030): Compare (targets) -> Bar Chart (Chart.js Canvas)
+        - Key Solution Capabilities: Organize -> Structured List/Cards with Icons (HTML/CSS + Unicode Icons)
+        - Governance & Transparency Points: Organize -> Structured List/Cards (HTML/CSS)
+        - SAP's Sustainability Value Chain (Conceptual Flow): Organize -> HTML/CSS Flow Diagram (No MermaidJS, No SVG)
+        - All charts use Chart.js rendering to Canvas. All diagrams/icons use HTML/CSS/Unicode.
+        - NO SVG graphics are used. NO Mermaid JS is used.
+    -->
+
+    <header class="bg-gradient-to-r from-[#0083C5] to-[#00B0DA] text-white p-8 md:p-12 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">SAP's Sustainability Credentials in 2025</h1>
+        <p class="text-lg md:text-xl max-w-3xl mx-auto">
+            SAP is committed to "helping the world run better and improving people's lives" by embedding sustainability into its core business and enabling its customers to do the same. In 2025, SAP's focus on climate action, circular economy, and social responsibility continues to accelerate, supported by innovative technology and strong governance.
+        </p>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="own-operations" class="mb-12">
+            <h2 class="text-3xl font-bold mb-8 text-center section-title">Our Own Operations: Leading by Example</h2>
+            <p class="text-center text-lg mb-8 max-w-2xl mx-auto dark-text">
+                SAP demonstrates its commitment to sustainability by setting ambitious goals and achieving significant milestones within its own operations. This leadership by example is crucial for inspiring broader change.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="card-bg rounded-lg shadow-xl p-6 transform hover:scale-105 transition-transform duration-300">
+                    <h3 class="text-xl font-semibold mb-3 primary-accent-text">Climate Action: Accelerating to Net-Zero</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="kpi-value text-[#0083C5]">Net-Zero</p>
+                            <p class="kpi-label dark-text">Target by 2030 across entire value chain (SBTi validated, 1.5°C aligned)</p>
+                        </div>
+                        <div>
+                            <p class="kpi-value text-[#0083C5]">2023</p>
+                            <p class="kpi-label dark-text">Achieved Carbon Neutrality in own operations</p>
+                        </div>
+                        <div>
+                            <p class="kpi-value text-[#0083C5]">100%</p>
+                            <p class="kpi-label dark-text">Renewable Electricity since 2014 for data centers & facilities</p>
+                        </div>
+                        <div>
+                            <p class="kpi-value text-[#0083C5]">90%</p>
+                            <p class="kpi-label dark-text">GHG Emissions Reduction target by 2030 (value chain, baseline 2023)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-bg rounded-lg shadow-xl p-6 transform hover:scale-105 transition-transform duration-300">
+                    <h3 class="text-xl font-semibold mb-3 positive-accent-text">Circular Economy: Towards Zero Waste</h3>
+                     <div class="space-y-4 mb-6">
+                        <div>
+                            <p class="kpi-value text-[#64A314]">2023</p>
+                            <p class="kpi-label dark-text">Achieved Zero Waste Goal</p>
+                        </div>
+                         <div>
+                            <p class="text-2xl font-bold text-[#64A314] flex items-center"><span>♻️</span> Free of Single-Use Plastics</p>
+                            <p class="kpi-label dark-text">Striving to operate free of single-use plastics</p>
+                        </div>
+                    </div>
+                    <p class="dark-text mb-2 font-semibold">E-waste Diversion:</p>
+                    <p class="dark-text text-sm mb-2">SAP continues to divert over 90% of its electrical and electronic waste from harmful disposal methods, promoting resource efficiency.</p>
+                    <div class="chart-container h-64 md:h-72">
+                        <canvas id="ewasteChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card-bg rounded-lg shadow-xl p-6 transform hover:scale-105 transition-transform duration-300">
+                    <h3 class="text-xl font-semibold mb-3 info-accent-text">Social Responsibility: Empowering People</h3>
+                    <ul class="space-y-3 mb-4 dark-text list-inside">
+                        <li class="flex items-start"><span class="text-[#0083C5] mr-2 text-xl">🤝</span> Committed to human rights across operations & supply chain.</li>
+                        <li class="flex items-start"><span class="text-[#0083C5] mr-2 text-xl">😊</span> Fostering an equal, inclusive, and healthy workplace.</li>
+                        <li class="flex items-start"><span class="text-[#0083C5] mr-2 text-xl">🌍</span> Powering equitable access to economic opportunity, education & employment.</li>
+                    </ul>
+                    <p class="dark-text mb-2 font-semibold">Tree Planting Initiative:</p>
+                    <p class="dark-text text-sm mb-2">SAP is actively contributing to reforestation and ecosystem conservation through its ambitious tree planting program.</p>
+                    <div class="chart-container h-64 md:h-72">
+                        <canvas id="treePlantingChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="enabling-customers" class="mb-12">
+            <h2 class="text-3xl font-bold mb-8 text-center section-title">Enabling Our Customers: Sustainable Business Solutions</h2>
+            <p class="text-center text-lg mb-8 max-w-2xl mx-auto dark-text">
+                SAP empowers businesses worldwide with a comprehensive suite of cloud-based, AI-enabled solutions designed to embed sustainability into every facet of their operations, turning commitments into tangible actions.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card-bg rounded-lg shadow-xl p-6">
+                    <h4 class="text-lg font-semibold mb-2 primary-accent-text">📊 SAP Sustainability Control Tower</h4>
+                    <p class="text-sm dark-text">Unifies sustainability data for consistent, auditable ESG reporting. (Intelligent App in SAP Business Data Cloud H2 2025)</p>
+                </div>
+                <div class="card-bg rounded-lg shadow-xl p-6">
+                    <h4 class="text-lg font-semibold mb-2 positive-accent-text">👣 SAP Sustainability Footprint Management</h4>
+                    <p class="text-sm dark-text">Enables precise calculation and monitoring of carbon footprints across Scopes 1, 2, and 3.</p>
+                </div>
+                <div class="card-bg rounded-lg shadow-xl p-6">
+                    <h4 class="text-lg font-semibold mb-2 info-accent-text">🔗 SAP Sustainability Data Exchange</h4>
+                    <p class="text-sm dark-text">Facilitates sharing of actual carbon data with suppliers for Scope 3 emissions reduction.</p>
+                </div>
+                <div class="card-bg rounded-lg shadow-xl p-6">
+                    <h4 class="text-lg font-semibold mb-2 secondary-accent-text">🔄 SAP Responsible Design and Production</h4>
+                    <p class="text-sm dark-text">Supports circularity, extended producer responsibility, and waste reduction initiatives.</p>
+                </div>
+                <div class="card-bg rounded-lg shadow-xl p-6">
+                    <h4 class="text-lg font-semibold mb-2 primary-accent-text">📗 SAP Green Ledger</h4>
+                    <p class="text-sm dark-text">Integrates ESG dimensions directly into financial reporting for holistic business steering.</p>
+                </div>
+                <div class="card-bg rounded-lg shadow-xl p-6">
+                    <h4 class="text-lg font-semibold mb-2 positive-accent-text">🤖 SAP Business AI for Sustainability</h4>
+                    <p class="text-sm dark-text">Streamlines EHS, product compliance, automates processes, and amplifies expertise. (Beta Aug 2025)</p>
+                </div>
+                 <div class="card-bg rounded-lg shadow-xl p-6 md:col-span-2 lg:col-span-3">
+                    <h4 class="text-lg font-semibold mb-2 info-accent-text">⚙️ SAP Signavio Process Transformation Suite</h4>
+                    <p class="text-sm dark-text">Embeds sustainability impact metrics to optimize business processes for environmental and social benefits. (Autumn 2025)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="interactive-insights" class="mb-12">
+            <h2 class="text-3xl font-bold mb-8 text-center section-title">Interactive Insights ✨</h2>
+            <p class="text-center text-lg mb-8 max-w-2xl mx-auto dark-text">
+                Leverage the power of AI to gain deeper insights into sustainability topics and understand key ESG terms.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card-bg rounded-lg shadow-xl p-6">
+                    <h3 class="text-xl font-semibold mb-3 primary-accent-text">Generate Sustainability Insight ✨</h3>
+                    <p class="text-sm dark-text mb-4">Click the button below to get a unique, actionable insight on a sustainability topic.</p>
+                    <button id="generateInsightBtn" class="bg-[#0083C5] hover:bg-[#00B0DA] text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 w-full">
+                        Generate Insight
+                    </button>
+                    <div id="insightLoading" class="hidden text-center mt-4 text-[#0083C5]">Loading insight...</div>
+                    <div id="sustainabilityInsight" class="mt-4 p-3 bg-gray-100 rounded-md text-sm dark-text min-h-[80px] flex items-center justify-center text-center">
+                        Your sustainability insight will appear here.
+                    </div>
+                </div>
+
+                <div class="card-bg rounded-lg shadow-xl p-6">
+                    <h3 class="text-xl font-semibold mb-3 positive-accent-text">Explain ESG Term ✨</h3>
+                    <p class="text-sm dark-text mb-4">Enter an ESG-related term (e.g., "CSRD", "SBTi", "Circular Economy") and get a concise explanation.</p>
+                    <input type="text" id="esgTermInput" placeholder="Enter ESG term" class="w-full p-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-[#0083C5]">
+                    <button id="explainEsgTermBtn" class="bg-[#64A314] hover:bg-[#00B0DA] text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 w-full">
+                        Explain Term
+                    </button>
+                    <div id="esgLoading" class="hidden text-center mt-4 text-[#64A314]">Explaining...</div>
+                    <div id="esgExplanation" class="mt-4 p-3 bg-gray-100 rounded-md text-sm dark-text min-h-[80px] flex items-center justify-center text-center">
+                        Explanation will appear here.
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="value-chain-flow" class="mb-12">
+            <h2 class="text-3xl font-bold mb-8 text-center section-title">SAP's Sustainability Value Chain Integration</h2>
+            <p class="text-center text-lg mb-8 max-w-2xl mx-auto dark-text">
+                SAP's approach integrates sustainability across the value chain, from internal operations to empowering customers and ensuring transparent governance. This holistic view drives meaningful impact.
+            </p>
+            <div class="overflow-x-auto p-4">
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 min-w-max">
+                    <div class="flowchart-step p-4 rounded-lg shadow-md text-center w-full md:w-1/4">
+                        <p class="font-semibold text-lg">1. Exemplar Operations</p>
+                        <p class="text-sm">Net-Zero, Circularity, Social Responsibility within SAP.</p>
+                    </div>
+                    <div class="text-2xl flowchart-arrow transform md:rotate-0 rotate-90">➔</div>
+                    <div class="flowchart-step p-4 rounded-lg shadow-md text-center w-full md:w-1/3">
+                        <p class="font-semibold text-lg">2. Enabler Solutions</p>
+                        <p class="text-sm">Providing tools (Control Tower, Footprint Mgmt, AI) for customer sustainability.</p>
+                    </div>
+                    <div class="text-2xl flowchart-arrow transform md:rotate-0 rotate-90">➔</div>
+                    <div class="flowchart-step p-4 rounded-lg shadow-md text-center w-full md:w-1/4">
+                        <p class="font-semibold text-lg">3. Governance & Transparency</p>
+                        <p class="text-sm">ESRS Reporting, SBTi Validation, Strategic Integration.</p>
+                    </div>
+                     <div class="text-2xl flowchart-arrow transform md:rotate-0 rotate-90">➔</div>
+                     <div class="bg-[#64A314] text-white p-4 rounded-lg shadow-md text-center w-full md:w-1/4">
+                        <p class="font-semibold text-lg">Impact</p>
+                        <p class="text-sm">Driving a low-carbon, circular, and equitable economy.</p>
+                    </div>
+                </div>
+            </div>
+             <p class="text-center text-md mt-6 max-w-3xl mx-auto dark-text">
+                This simplified flow illustrates how SAP's internal commitments fuel the development of solutions that enable customers to achieve their own sustainability goals, all underpinned by robust governance and transparent reporting, ultimately contributing to a more sustainable global economy.
+            </p>
+        </section>
+
+        <section id="governance-transparency" class="mb-12">
+            <h2 class="text-3xl font-bold mb-8 text-center section-title">Governance & Transparency</h2>
+            <p class="text-center text-lg mb-8 max-w-2xl mx-auto dark-text">
+                Strong governance and transparent reporting are foundational to SAP's sustainability strategy, ensuring accountability and building trust with stakeholders.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card-bg rounded-lg shadow-xl p-6">
+                    <h4 class="text-lg font-semibold mb-2 primary-accent-text">🏛️ Strategic Anchor</h4>
+                    <p class="text-sm dark-text">Sustainability is firmly embedded in SAP's corporate strategy, governance structures, and Executive Board compensation.</p>
+                </div>
+                <div class="card-bg rounded-lg shadow-xl p-6">
+                    <h4 class="text-lg font-semibold mb-2 positive-accent-text">📜 Reporting Standards (ESRS)</h4>
+                    <p class="text-sm dark-text">SAP's 2024 Sustainability statement adheres to the European Sustainability Reporting Standards (CSRD), ensuring rigorous and standardized disclosure.</p>
+                </div>
+                <div class="card-bg rounded-lg shadow-xl p-6">
+                    <h4 class="text-lg font-semibold mb-2 info-accent-text">✅ External Validation (SBTi)</h4>
+                    <p class="text-sm dark-text">Net-zero targets are validated by the Science Based Targets initiative, aligning with global climate science and a 1.5°C pathway.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="vision" class="text-center py-10 bg-gradient-to-r from-[#0A1C2B] to-[#0083C5] text-white rounded-lg shadow-xl">
+            <h2 class="text-3xl font-bold mb-6">SAP's Vision for 2025 and Beyond</h2>
+            <p class="text-xl max-w-3xl mx-auto px-4">
+                SAP aims to be both an <strong class="text-[#64A314]">exemplar</strong> in its own sustainable operations and a key <strong class="text-[#00B0DA]">enabler</strong> for its customers, driving a fundamental transformation towards a low-carbon, circular, and equitable economy for a better future.
+            </p>
+        </section>
+    </main>
+
+    <footer class="text-center p-6 mt-12 border-t border-gray-300">
+        <p class="text-sm text-gray-600">&copy; 2025 SAP SE. All rights reserved. Infographic based on publicly available information regarding SAP's sustainability initiatives.</p>
+        <p class="text-xs text-gray-500 mt-1">This infographic was generated based on data for SAP's 2025 sustainability credentials. No SVG graphics or Mermaid JS were used in the creation of this page; all charts are rendered using Chart.js on HTML Canvas, and diagrams/icons are HTML/CSS based or Unicode characters.</p>
+    </footer>
+
+    <script>
+        function wrapLabel(str, maxWidth) {
+            if (str.length <= maxWidth) {
+                return str;
+            }
+            const words = str.split(' ');
+            let currentLine = '';
+            const lines = [];
+            for (const word of words) {
+                if ((currentLine + word).length > maxWidth && currentLine.length > 0) {
+                    lines.push(currentLine.trim());
+                    currentLine = word + ' ';
+                } else {
+                    currentLine += word + ' ';
+                }
+            }
+            lines.push(currentLine.trim());
+            return lines;
+        }
+
+        const tooltipTitleCallback = function(tooltipItems) {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+              return label.join(' ');
+            } else {
+              return label;
+            }
+        };
+
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#0A1C2B', /* Darker Blue */
+                        font: { size: 12 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    backgroundColor: '#0A1C2B', /* Darker Blue */
+                    titleColor: '#FFFFFF',
+                    bodyColor: '#F5F5F5', /* Light Gray */
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#0A1C2B', font: { size: 10 } }, /* Darker Blue */
+                    grid: { color: '#CCCCCC' } /* Neutral Gray */
+                },
+                x: {
+                    ticks: { color: '#0A1C2B', font: { size: 10 } }, /* Darker Blue */
+                    grid: { display: false }
+                }
+            }
+        };
+        
+        const ewasteData = {
+            labels: ['Diverted from Landfill/Incineration', 'Other'],
+            datasets: [{
+                label: 'E-waste Diversion',
+                data: [90, 10],
+                backgroundColor: ['#64A314', '#00B0DA'], /* SAP Green, Brighter Blue/Teal */
+                borderColor: ['#FFFFFF', '#FFFFFF'],
+                borderWidth: 2,
+                hoverOffset: 4
+            }]
+        };
+        new Chart(document.getElementById('ewasteChart'), {
+            type: 'doughnut',
+            data: ewasteData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top', labels: { color: '#0A1C2B', font: {size: 12} } }, /* Darker Blue */
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback,
+                            label: function(context) {
+                                return context.label + ': ' + context.raw + '%';
+                            }
+                        },
+                        backgroundColor: '#0A1C2B', /* Darker Blue */
+                        titleColor: '#FFFFFF',
+                        bodyColor: '#F5F5F5', /* Light Gray */
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+
+        const treePlantingData = {
+            labels: [wrapLabel('Goal by 2025', 16), wrapLabel('Ultimate Goal by 2030', 16)],
+            datasets: [{
+                label: 'Trees Planted (Millions)',
+                data: [21, 25],
+                backgroundColor: ['#0083C5', '#64A314'], /* SAP Blue, SAP Green */
+                borderColor: ['#0A1C2B', '#0A1C2B'], /* Darker Blue */
+                borderWidth: 1,
+                borderRadius: 5,
+                barPercentage: 0.6,
+                categoryPercentage: 0.7
+            }]
+        };
+        new Chart(document.getElementById('treePlantingChart'), {
+            type: 'bar',
+            data: treePlantingData,
+            options: {
+                ...commonChartOptions,
+                scales: {
+                    y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Millions of Trees', color: '#0A1C2B'} }, /* Darker Blue */
+                    x: { ...commonChartOptions.scales.x }
+                },
+                 plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback,
+                            label: function(context) {
+                                return 'Target: ' + context.raw + ' Million Trees';
+                            }
+                        },
+                        backgroundColor: '#0A1C2B', /* Darker Blue */
+                        titleColor: '#FFFFFF',
+                        bodyColor: '#F5F5F5', /* Light Gray */
+                    }
+                }
+            }
+        });
+
+        // Gemini API Integration
+        document.getElementById('generateInsightBtn').addEventListener('click', async () => {
+            const insightDiv = document.getElementById('sustainabilityInsight');
+            const loadingDiv = document.getElementById('insightLoading');
+            insightDiv.textContent = ''; // Clear previous insight
+            loadingDiv.classList.remove('hidden');
+
+            const prompts = [
+                "Provide a concise, actionable insight on how businesses can reduce their carbon footprint in logistics.",
+                "Offer a practical tip for implementing circular economy principles in product design.",
+                "Give a short, impactful statement on the importance of social responsibility in modern supply chains.",
+                "Suggest a key step for companies looking to improve their ESG reporting accuracy."
+            ];
+            const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: randomPrompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    insightDiv.textContent = text;
+                } else {
+                    insightDiv.textContent = 'Failed to generate insight. Please try again.';
+                }
+            } catch (error) {
+                console.error('Error generating insight:', error);
+                insightDiv.textContent = 'Error: Could not connect to the API. Please try again later.';
+            } finally {
+                loadingDiv.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('explainEsgTermBtn').addEventListener('click', async () => {
+            const termInput = document.getElementById('esgTermInput');
+            const explanationDiv = document.getElementById('esgExplanation');
+            const loadingDiv = document.getElementById('esgLoading');
+            const term = termInput.value.trim();
+
+            if (!term) {
+                explanationDiv.textContent = 'Please enter a term to explain.';
+                return;
+            }
+
+            explanationDiv.textContent = ''; // Clear previous explanation
+            loadingDiv.classList.remove('hidden');
+
+            const prompt = `Provide a concise, easy-to-understand explanation for the ESG term: "${term}". Keep it to 2-3 sentences.`;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    explanationDiv.textContent = text;
+                } else {
+                    explanationDiv.textContent = `Could not explain "${term}". Please try a different term.`;
+                }
+            } catch (error) {
+                console.error('Error explaining term:', error);
+                explanationDiv.textContent = 'Error: Could not connect to the API. Please try again later.';
+            } finally {
+                loadingDiv.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
